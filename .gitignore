@@ -1,0 +1,26 @@
+# Gradle
+.gradle/
+build/
+app/build/
+
+# Local configuration
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+.DS_Store
+
+# Gradle wrapper jar (regenerate via Android Studio / `gradle wrapper`)
+gradle/wrapper/gradle-wrapper.jar
+gradlew
+gradlew.bat
+
+# Captures / logs
+captures/
+.navigation/
+*.log
+
+# Keystore files (never commit signing keys)
+*.jks
+*.keystore

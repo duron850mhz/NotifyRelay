@@ -1,0 +1,18 @@
+<resources>
+    <string-array name="log_limit_labels">
+        <item>なし</item>
+        <item>50件</item>
+        <item>100件</item>
+        <item>300件</item>
+        <item>無制限</item>
+    </string-array>
+
+    <!-- Same order as log_limit_labels. -1 = unlimited. -->
+    <integer-array name="log_limit_values">
+        <item>0</item>
+        <item>50</item>
+        <item>100</item>
+        <item>300</item>
+        <item>-1</item>
+    </integer-array>
+</resources>
