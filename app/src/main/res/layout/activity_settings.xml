@@ -53,6 +53,21 @@
             android:layout_marginTop="8dp"
             android:entries="@array/log_limit_labels" />
 
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchSkipOngoing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="進行中(ongoing)通知は転送しない" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="「〜を最適化しています」等の進捗・同期系の通知を除外します"
+            android:textSize="12sp"
+            android:textColor="#888888" />
+
         <Button
             android:id="@+id/buttonSave"
             android:layout_width="match_parent"

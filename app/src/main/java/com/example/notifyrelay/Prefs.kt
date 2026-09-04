@@ -12,6 +12,7 @@ object Prefs {
     private const val KEY_ENABLED = "enabled"
     private const val KEY_SELECTED_PACKAGES = "selected_packages"
     private const val KEY_LOG_LIMIT = "log_limit"
+    private const val KEY_SKIP_ONGOING = "skip_ongoing"
 
     private fun prefs(context: Context): SharedPreferences =
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -57,5 +58,13 @@ object Prefs {
 
     fun setLogLimit(context: Context, limit: Int) {
         prefs(context).edit().putInt(KEY_LOG_LIMIT, limit).apply()
+    }
+
+    /** Whether to skip "ongoing" (progress/status) notifications, e.g. sync/optimize progress. */
+    fun getSkipOngoing(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_SKIP_ONGOING, true)
+
+    fun setSkipOngoing(context: Context, skip: Boolean) {
+        prefs(context).edit().putBoolean(KEY_SKIP_ONGOING, skip).apply()
     }
 }

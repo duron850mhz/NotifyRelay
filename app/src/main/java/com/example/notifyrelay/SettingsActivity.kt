@@ -31,6 +31,8 @@ class SettingsActivity : AppCompatActivity() {
         val currentLimitIndex = logLimitValues.indexOf(currentLimit).let { if (it < 0) 2 else it } // default: 100件
         binding.spinnerLogLimit.setSelection(currentLimitIndex)
 
+        binding.switchSkipOngoing.isChecked = Prefs.getSkipOngoing(this)
+
         val selected = Prefs.getSelectedPackages(this)
         val pm = packageManager
         val apps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
@@ -59,6 +61,8 @@ class SettingsActivity : AppCompatActivity() {
             val selectedLimit = logLimitValues[binding.spinnerLogLimit.selectedItemPosition]
             Prefs.setLogLimit(this, selectedLimit)
             RelayLog.setMaxEntries(selectedLimit)
+
+            Prefs.setSkipOngoing(this, binding.switchSkipOngoing.isChecked)
 
             Toast.makeText(this, "保存しました", Toast.LENGTH_SHORT).show()
         }
