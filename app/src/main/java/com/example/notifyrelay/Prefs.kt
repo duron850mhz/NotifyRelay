@@ -13,6 +13,7 @@ object Prefs {
     private const val KEY_SELECTED_PACKAGES = "selected_packages"
     private const val KEY_LOG_LIMIT = "log_limit"
     private const val KEY_SKIP_ONGOING = "skip_ongoing"
+    private const val KEY_EXCLUDE_KEYWORDS = "exclude_keywords"
 
     private fun prefs(context: Context): SharedPreferences =
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -67,4 +68,19 @@ object Prefs {
     fun setSkipOngoing(context: Context, skip: Boolean) {
         prefs(context).edit().putBoolean(KEY_SKIP_ONGOING, skip).apply()
     }
+
+    /** Raw newline-separated keyword list, as typed in Settings. */
+    fun getExcludeKeywordsRaw(context: Context): String =
+        prefs(context).getString(KEY_EXCLUDE_KEYWORDS, "") ?: ""
+
+    fun setExcludeKeywordsRaw(context: Context, raw: String) {
+        prefs(context).edit().putString(KEY_EXCLUDE_KEYWORDS, raw).apply()
+    }
+
+    /** Parsed, non-blank keywords. A notification whose title+body contains any of these is skipped. */
+    fun getExcludeKeywords(context: Context): List<String> =
+        getExcludeKeywordsRaw(context)
+            .split("\n")
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
 }

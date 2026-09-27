@@ -32,6 +32,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.spinnerLogLimit.setSelection(currentLimitIndex)
 
         binding.switchSkipOngoing.isChecked = Prefs.getSkipOngoing(this)
+        binding.editExcludeKeywords.setText(Prefs.getExcludeKeywordsRaw(this))
 
         val selected = Prefs.getSelectedPackages(this)
         val pm = packageManager
@@ -63,6 +64,7 @@ class SettingsActivity : AppCompatActivity() {
             RelayLog.setMaxEntries(selectedLimit)
 
             Prefs.setSkipOngoing(this, binding.switchSkipOngoing.isChecked)
+            Prefs.setExcludeKeywordsRaw(this, binding.editExcludeKeywords.text.toString())
 
             Toast.makeText(this, "保存しました", Toast.LENGTH_SHORT).show()
         }

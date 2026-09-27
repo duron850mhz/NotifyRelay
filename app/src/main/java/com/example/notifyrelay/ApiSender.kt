@@ -1,6 +1,8 @@
 package com.example.notifyrelay
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
@@ -13,8 +15,20 @@ import java.io.IOException
 
 object ApiSender {
     private val client = OkHttpClient()
+    private val retryHandler = Handler(Looper.getMainLooper())
+    private const val RETRY_DELAY_MS = 2000L
 
     fun send(context: Context, packageName: String, title: String, body: String) {
+        sendInternal(context, packageName, title, body, isRetry = false)
+    }
+
+    private fun sendInternal(
+        context: Context,
+        packageName: String,
+        title: String,
+        body: String,
+        isRetry: Boolean
+    ) {
         val url = Prefs.getApiUrl(context)
         if (url.isBlank()) {
             RelayLog.add(
@@ -47,9 +61,18 @@ object ApiSender {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                RelayLog.add(
-                    LogEntry(System.currentTimeMillis(), packageName, title, body, false, e.message ?: "通信エラー")
-                )
+                // Transient network blips (DNS not yet resolved right after Wi-Fi/mobile
+                // handoff, brief connectivity gap, etc.) are common and usually self-resolve
+                // within a second or two. Retry once before logging it as a failure.
+                if (!isRetry) {
+                    retryHandler.postDelayed({
+                        sendInternal(context, packageName, title, body, isRetry = true)
+                    }, RETRY_DELAY_MS)
+                } else {
+                    RelayLog.add(
+                        LogEntry(System.currentTimeMillis(), packageName, title, body, false, e.message ?: "通信エラー")
+                    )
+                }
             }
 
             override fun onResponse(call: Call, response: Response) {

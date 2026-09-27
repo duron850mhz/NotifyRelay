@@ -41,6 +41,15 @@ class NotificationRelayService : NotificationListenerService() {
         // Skip empty/placeholder notifications (e.g. summary/group notifications with no content).
         if (title.isEmpty() && text.isEmpty()) return
 
+        // User-defined keyword exclusion (Settings). Catches noisy notifications that aren't
+        // reliably identifiable via OS-level flags like isOngoing (e.g. Outlook's "optimizing
+        // database..." status message, which is not actually flagged as ongoing).
+        val excludeKeywords = Prefs.getExcludeKeywords(context)
+        if (excludeKeywords.isNotEmpty()) {
+            val combined = "$title $text"
+            if (excludeKeywords.any { combined.contains(it) }) return
+        }
+
         // Some apps post the same content twice in quick succession (initial post + an
         // update with identical text). Treat that as a duplicate and skip the second one.
         val dedupKey = "$packageName|$title|$text"
